@@ -16,13 +16,21 @@ import com.neytech.mscustomer.entities.Customer;
 import com.neytech.mscustomer.services.CustomerService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/customers")
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerController {
 	
 	private final CustomerService service;
+	
+	@GetMapping
+	public String status() {
+		log.info("Obtendo status do microservice de clientes");
+		return "ok";
+	}
 
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody CustomerSaveRequest request) {
