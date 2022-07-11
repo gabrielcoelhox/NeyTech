@@ -3,8 +3,10 @@ package com.neytech.mscustomer.controllers.representation;
 import com.neytech.mscustomer.entities.Customer;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CustomerSaveRequest {
 	
 	private String cpf;

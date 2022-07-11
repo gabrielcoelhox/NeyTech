@@ -6,8 +6,10 @@ import com.neytech.mscards.entities.Card;
 import com.neytech.mscards.entities.enums.CardFlag;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CardSaveRequest {
 
 	private String name;

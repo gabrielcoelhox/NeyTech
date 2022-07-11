@@ -2,6 +2,7 @@ package com.neytech.mscards.entities;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,5 +27,6 @@ public class ClientCard {
 	@JoinColumn(name = "id_card")
 	private Card card;
 	
+	@Column(name = "limit_card")
 	private BigDecimal limit;
 }
