@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.neytech.mscustomer.controllers.representation.CustomerSaveRequest;
 import com.neytech.mscustomer.entities.Customer;
+import com.neytech.mscustomer.excpetions.ResourceNotFound;
 import com.neytech.mscustomer.services.CustomerService;
 
 import lombok.RequiredArgsConstructor;
@@ -45,11 +46,9 @@ public class CustomerController {
 	}
 	
 	@GetMapping(params = "cpf")
-    public ResponseEntity<?> customerData(@RequestParam("cpf") String cpf){
-        var model = service.getByCPF(cpf);
-        if(model.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(model);
-    }
+	public ResponseEntity<Customer> customerData(@RequestParam("cpf")String cpf) {
+		Customer cliente = service.getByCPF(cpf)
+				.orElseThrow(() -> new ResourceNotFound("Customer not found with cpf = " + cpf));
+		return ResponseEntity.ok(cliente);
+	}
 }
