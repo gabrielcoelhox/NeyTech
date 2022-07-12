@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neytech.mscreditappraiser.entities.CustomerEvaluationReturn;
 import com.neytech.mscreditappraiser.entities.CustomerSituation;
+import com.neytech.mscreditappraiser.entities.DataCardApplicationEmission;
 import com.neytech.mscreditappraiser.entities.EvaluationData;
+import com.neytech.mscreditappraiser.entities.ProtocolRequestCard;
 import com.neytech.mscreditappraiser.exceptions.CustomerDataNotFoundException;
 import com.neytech.mscreditappraiser.exceptions.ErroComunicacaoMicroservicesException;
+import com.neytech.mscreditappraiser.exceptions.ErrorRequestCardException;
 import com.neytech.mscreditappraiser.services.CreditAppraiserService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +34,7 @@ public class CreditAppraiserController {
     }
 	
 	@GetMapping(value = "customer-situation", params = "cpf")
-    public ResponseEntity<?> customerSituationConsult(@RequestParam("cpf") String cpf) {
+    public ResponseEntity customerSituationConsult(@RequestParam("cpf") String cpf) {
         try {
             CustomerSituation customerSituation = creditAppraiserService.getCustomerSituation(cpf);
             return ResponseEntity.ok(customerSituation);
@@ -43,7 +46,7 @@ public class CreditAppraiserController {
     }
 	
 	@PostMapping
-    public ResponseEntity<?> carryOutEvaluation(@RequestBody EvaluationData data) {
+    public ResponseEntity carryOutEvaluation(@RequestBody EvaluationData data) {
         try {
         	CustomerEvaluationReturn customerEvaluationReturn = creditAppraiserService.
         			carryOutEvaluation(data.getCpf(), data.getIncome());
@@ -52,6 +55,17 @@ public class CreditAppraiserController {
             return ResponseEntity.notFound().build();
         } catch (ErroComunicacaoMicroservicesException ex) {
             return ResponseEntity.status(HttpStatus.resolve(ex.getStatus())).body(ex.getMessage());
+        }
+    }
+	
+	@PostMapping("card-requests")
+    public ResponseEntity requestCard(@RequestBody DataCardApplicationEmission data) {
+        try {
+        	ProtocolRequestCard protocolRequestCard = creditAppraiserService
+                    .solicitarEmissaoCartao(data);
+            return ResponseEntity.ok(protocolRequestCard);
+        } catch (ErrorRequestCardException ex) {
+            return ResponseEntity.internalServerError().body(ex.getMessage());
         }
     }
 }

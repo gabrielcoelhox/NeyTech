@@ -34,7 +34,6 @@ public class SubscriberCardIssue {
             customerCard.setLimit(data.getLimitReleased());
 
             clientCardRepository.save(customerCard);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

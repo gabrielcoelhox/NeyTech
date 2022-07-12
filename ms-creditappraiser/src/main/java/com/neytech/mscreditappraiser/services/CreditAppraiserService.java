@@ -2,6 +2,7 @@ package com.neytech.mscreditappraiser.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,12 @@ import com.neytech.mscreditappraiser.entities.CustomerCardResponse;
 import com.neytech.mscreditappraiser.entities.CustomerData;
 import com.neytech.mscreditappraiser.entities.CustomerEvaluationReturn;
 import com.neytech.mscreditappraiser.entities.CustomerSituation;
+import com.neytech.mscreditappraiser.entities.DataCardApplicationEmission;
+import com.neytech.mscreditappraiser.entities.ProtocolRequestCard;
 import com.neytech.mscreditappraiser.exceptions.CustomerDataNotFoundException;
 import com.neytech.mscreditappraiser.exceptions.ErroComunicacaoMicroservicesException;
+import com.neytech.mscreditappraiser.exceptions.ErrorRequestCardException;
+import com.neytech.mscreditappraiser.mqueue.RequestEmissionCardPublisher;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,7 @@ public class CreditAppraiserService {
 
 	private final CustomerResourceClient customerClient;
     private final CardsResourceClient cartoesClient;
+    private final RequestEmissionCardPublisher emissionCardPublisher;
 
     public CustomerSituation getCustomerSituation(String cpf)
             throws CustomerDataNotFoundException, ErroComunicacaoMicroservicesException {
@@ -81,6 +87,16 @@ public class CreditAppraiserService {
                 throw new CustomerDataNotFoundException();
             }
             throw new ErroComunicacaoMicroservicesException(ex.getMessage(), status);
+        }
+    }
+    
+    public ProtocolRequestCard solicitarEmissaoCartao(DataCardApplicationEmission data) {
+        try {
+        	emissionCardPublisher.requestCard(data);
+            var protocol = UUID.randomUUID().toString();
+            return new ProtocolRequestCard(protocol);
+        } catch (Exception ex) {
+            throw new ErrorRequestCardException(ex.getMessage());
         }
     }
 }
