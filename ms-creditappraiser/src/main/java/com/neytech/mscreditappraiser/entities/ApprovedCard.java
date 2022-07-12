@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Card {
+public class ApprovedCard {
 
-	private Long id;
-	private String name;
+	private String card;
 	private String flag;
-	private BigDecimal basicLimit;
+	private BigDecimal approvedLimit;
 }
