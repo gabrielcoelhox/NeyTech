@@ -12,9 +12,11 @@ import com.neytech.mscards.repository.CardRepository;
 import com.neytech.mscards.repository.ClientCardRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SubscriberCardIssue {
 
 	private final CardRepository cardRepository;
@@ -35,7 +37,7 @@ public class SubscriberCardIssue {
 
             clientCardRepository.save(customerCard);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error("Error when receiving card issuance request: {}", ex.getMessage());
         }
     }
 }
